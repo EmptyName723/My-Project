@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      font-size: 125%;
+    }
+    h2 {
+      text-align: center;
+    }
+    #ansInput {
+      margin-right: 10px;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #428bca;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 7px;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: #3071a9;
+    }
+    .result {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 120%;
+      font-weight: bold;
+    }
+    #percent_cont {
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+    }
+    #name {
+      font-size: 10px;
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" style="margin-top: 35vh;">
+    <h2 id="question"></h2>
+    <input type="text" id="ansInput">
+    <button id="submit" onclick="checkAns()" class="button">Submit</button>
+    <button id="next" onclick="nextQ()" class="button">Next</button>
+    <p id="result" class="result"></p>
+    <div id="percent_cont">    
+      <label for="percentage" id="perc_label">英文學名出現比例：</label>
+      <input type="range" id="percentage" name="percentage" min="0" max="10">
+    </div>
+    <!-- <p id="debug"></p> -->
+    <p id="name">1101037</p>
+  </div>
+
+  <script>
+    let quiz = [ 
+      {question: '蟯蟲', answer: 'Ascaris lumbricoides'},
+      {question: '鞭蟲', answer: 'Trichuris trichiura'},
+      {question: '美國鉤蟲', answer: 'Necator americanus'},
+      {question: '十二指腸鉤蟲', answer: 'Ancylostoma duodenale'},
+      {question: '糞小桿線蟲', answer: 'Strongyloides stercoralis'},
+      {question: '蟯蟲', answer: 'Enterobius vermicularis'},
+      {question: '海獸胃線蟲', answer: 'Anisakis spp.'},
+      {question: '菲律賓毛線蟲', answer: 'Capillaria philippinensis'},
+      {question: '旋毛蟲', answer: 'Trichinella spiralis'},
+      {question: '肝蛭毛線蟲', answer: 'Capillaria hepatica'},
+      {question: '廣東住血線蟲', answer: 'Angiostrongylus cantonensis'},
+      {question: '哥斯大黎加住血線蟲', answer: 'Angiostrongylus costaricensis'},
+      {question: '犬蛔蟲', answer: 'Toxocara canis'},
+      {question: '犬鉤蟲', answer: 'Ancylostoma caninum'},
+      {question: '有棘頷口線蟲', answer: 'Gnathostoma spinigerum'},
+      {question: '班氏絲蟲', answer: 'Wuchereria bancrofti'},
+      {question: '馬來絲蟲', answer: 'Brugia malayi'},
+      {question: '帝汶絲蟲', answer: 'Brugia timori'},
+      {question: '犬心絲蟲', answer: 'Dirofilaria immitis'},
+      {question: '羅阿絲蟲', answer: 'Loa loa'},
+      {question: '蟠尾絲蟲', answer: 'Onchocerca volvulus'},
+      {question: '曼森絲蟲', answer: 'Mansonella spp.'},
+      {question: '常現分辨絲蟲', answer: 'Mansonella perstans'},
+      {question: '鏈狀絲蟲', answer: 'Mansonella streptocerca'},
+      {question: '奧薩地絲蟲', answer: 'Mansonella ozzardi'},
+      {question: '麥地那絲蟲', answer: 'Dracunculus medinensis'},
+      {question: '廣節裂頭絛蟲', answer: 'Diphyllobothrium latum'},
+      {question: '曼森裂頭絛蟲', answer: 'Spirometra mansoni'},
+      {question: '有鉤絛蟲', answer: 'Taenia solium'},
+      {question: '無鉤絛蟲', answer: 'Taenia saginata'},
+      {question: '亞洲無鉤絛蟲', answer: 'Taenia saginata asiatica'},
+      {question: '短小包膜絛蟲', answer: 'Hymenolepis nana'},
+      {question: '縮小包膜絛蟲', answer: 'Hymenolepis diminuta'},
+      {question: '犬腹殖器絛蟲', answer: 'Dipylidium caninum'},
+      {question: '單房性包生絛蟲', answer: 'Echinococcus granulosus'},
+      {question: '多房性包生絛蟲', answer: 'Echinococcus multilocularis'}
+    ];
+    
+    let SelectedQ;
+    let SelectedA;
+    let randomN = 0;
+    let rand = -1;
+    let norepeat = [];
+
+    function nextQ() {
+      do {
+        randomN = Math.floor(Math.random() * quiz.length);
+      } while (norepeat.includes(randomN) === true);
+      rand = randomN;
+
+      norepeat.unshift(rand);
+
+      if (norepeat.length >= Math.floor(quiz.length * 0.75)) {
+        norepeat.pop();
+      }
+      
+      let percentage = document.getElementById("percentage").value;
+      let flip = Math.random() * 10;
+      
+      if (percentage < flip) {
+        SelectedQ = quiz[rand].question;
+        SelectedA = quiz[rand].answer;
+      }
+      else {
+        SelectedQ = quiz[rand].answer;
+        SelectedA = quiz[rand].question;
+      };
+      document.getElementById("question").innerHTML = `${SelectedQ}`;
+      document.getElementById("result").innerHTML = ``;
+      document.getElementById("ansInput").value = "";
+      //document.getElementById("debug").innerHTML = `rand=${rand}, norepeat=${norepeat.toString()}`;
+    }
+
+    function checkAns() {
+      let input = document.getElementById("ansInput").value;
+      
+      if (input === SelectedA || input === SelectedA + ' ') {
+        document.getElementById("result").innerHTML = `Correct`;
+      }
+      else {
+        document.getElementById("result").innerHTML = `Incorrect! <i>${SelectedA}</i>`;
+      }
+    }
+
+    window.onload = function() {
+      nextQ();
+    };
+  </script>
+</body>
+</html>
