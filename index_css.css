@@ -1,0 +1,39 @@
+:root {
+    --header-height: 80px;
+    --sidebar-width: 150px;
+    --navbar-height: 1.2em;
+}
+.layout {
+    display: block;
+    position: absolute;
+}
+#header {
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: var(--header-height);
+}
+#navbar {
+    background-color: rgb(70, 70, 70);
+    left: 0;
+    top: var(--header-height);
+    width: 100vw;
+    height: var(--navbar-height);
+}
+#sidebar {
+    left: 0;
+    top: calc(var(--header-height) + var(--navbar-height));
+    width: var(--sidebar-width);
+    height: calc(100vh - var(--header-height) - var(--navbar-height));
+    background-color: antiquewhite;
+}
+#container {
+
+    left: var(--sidebar-width);
+    top: calc(var(--header-height) + var(--navbar-height));
+    width: calc(100vw - var(--sidebar-width));
+    height: calc(100vh - var(--header-height) - var(--navbar-height));
+}
+.content {
+    margin: 1em;
+}
