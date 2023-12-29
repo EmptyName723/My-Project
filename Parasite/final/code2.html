@@ -154,6 +154,12 @@
 
     window.onload = function() {
       nextQ();
+
+      document.getElementById("ansInput").addEventListener("keyup", ({key}) => {
+        if (key === "Enter") {
+          checkAns();
+        }
+      });
     };
   </script>
 </body>
