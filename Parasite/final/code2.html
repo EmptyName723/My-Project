@@ -135,14 +135,16 @@
     let SelectedA;
     let randomN = 0;
     let rand = -1;
+    let lastQ = -1;
     let norepeat = [];
     const checkBoxes = document.querySelectorAll("input[type=checkbox]");
 
     function nextQ() {
       do {
         randomN = Math.floor(Math.random() * quiz.length);
-      } while (norepeat.includes(randomN) === true);
+      } while (norepeat.includes(randomN) === true || randomN === lastQ);
       rand = randomN;
+      lastQ = rand;
 
       norepeat.push(rand);
 
@@ -164,7 +166,7 @@
       document.getElementById("question").innerHTML = `${SelectedQ}`;
       document.getElementById("result").innerHTML = ``;
       document.getElementById("ansInput").value = "";
-      //document.getElementById("debug").innerHTML = `rand=${rand}, norepeat=${norepeat.toString()}`;
+      //document.getElementById("debug").innerHTML = `rand=${rand}, norepeat=${norepeat.toString()}, lastQ=${lastQ}`;
     }
 
     function checkAns() {
