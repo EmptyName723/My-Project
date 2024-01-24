@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Reader with Custom Format</title>
+    <style>
+        #output {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSV Reader with Custom Format</h1>
+
+    <p>Choose a CSV file, enter a format with placeholders like {0}, {1}, etc., and click "Read CSV".</p>
+
+    <label for="csvFile">Choose a CSV file:</label>
+    <input type="file" id="csvFile" accept=".csv">
+
+    <br><br>
+
+    <label for="customFormat">Enter the format:</label>
+    <input type="text" id="customFormat">
+
+    <button onclick="readCSV()">Read CSV</button>
+
+    <div id="output"></div>
+
+    <script>
+        function readCSV() {
+            const fileInput = document.getElementById('csvFile');
+            const customFormatInput = document.getElementById('customFormat');
+            const outputDiv = document.getElementById('output');
+
+            const file = fileInput.files[0];
+            const customFormat = customFormatInput.value;
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const csv = e.target.result;
+                    const rows = csv.split('\n');
+                    const headers = rows[0].split(',');
+
+                    let output = '<h2>Result:</h2>';
+
+                    for (let i = 0; i < rows.length; i++) {
+                        const data = rows[i].split(',');
+                        if (data.length === headers.length) {
+                            const formattedData = applyFormat(data, customFormat);
+                            output += `<p>${formattedData}</p>`;
+                        }
+                    }
+
+                    outputDiv.innerHTML = output;
+                };
+
+                reader.readAsText(file);
+            } else {
+                outputDiv.innerHTML = '<p>Please choose a CSV file.</p>';
+            }
+        }
+
+        function applyFormat(data, format) {
+            return format.replace(/\{(\d+)\}/g, function (match, index) {
+                const dataIndex = parseInt(index);
+                return data[dataIndex] || '';
+            });
+        }
+    </script>
+</body>
+</html>
