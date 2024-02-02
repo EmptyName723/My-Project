@@ -130,7 +130,7 @@
     ];
     
     let quiz = [];    
-
+    /*變數*/
     let SelectedQ;
     let SelectedA;
     let randomN = 0;
@@ -138,7 +138,7 @@
     let lastQ = -1;
     let norepeat = [];
     const checkBoxes = document.querySelectorAll("input[type=checkbox]");
-
+    /*載入下一個問題*/
     function nextQ() {
       do {
         randomN = Math.floor(Math.random() * quiz.length);
@@ -146,13 +146,13 @@
       rand = randomN;
       lastQ = rand;
 
-      norepeat.push(rand);
+      norepeat.push(rand);   /*將問題編號加入已答題陣列後面*/
 
       if (norepeat.length >= Math.floor(quiz.length * 0.75)) {
-        norepeat.shift();
+        norepeat.shift();   /*已答題陣列太長，去掉第一個*/
       }
-
-      let percentage = document.getElementById("percentage").value;
+      /*英與中比例設定*/
+      let percentage = document.getElementById("percentage").value;   
       let flip = Math.random() * 10;
       
       if (percentage < flip) {
@@ -163,12 +163,13 @@
         SelectedQ = quiz[rand].answer;
         SelectedA = quiz[rand].question;
       };
+      /*頁面載入問題*/
       document.getElementById("question").innerHTML = `${SelectedQ}`;
       document.getElementById("result").innerHTML = ``;
       document.getElementById("ansInput").value = "";
       //document.getElementById("debug").innerHTML = `rand=${rand}, norepeat=${norepeat.toString()}, lastQ=${lastQ}`;
     }
-
+    /*確認答案*/
     function checkAns() {
       let input = document.getElementById("ansInput").value;
       
@@ -177,10 +178,10 @@
       }
       else {
         document.getElementById("result").innerHTML = `Incorrect! <i>${SelectedA}</i>`;
-        norepeat.pop();
+        norepeat.pop();   /*答案不對，去掉已答題陣列最後面（即該問題的編號）*/
       }
     }
-
+    /*根據勾選框設定問題陣列*/
     function updateQuiz() {
       quiz = Array.from(checkBoxes)
         .filter(elm => elm.checked)
@@ -195,12 +196,12 @@
       norepeat = [];
       nextQ();
     }
-
+    /*網頁載入啟動*/
     window.onload = function() {
-      checkBoxes.forEach(elm => elm.addEventListener("change", updateQuiz));
+      checkBoxes.forEach(elm => elm.addEventListener("change", updateQuiz));  /*讓每次更動勾選框都會啟動updateQuiz()*/
       updateQuiz();
       
-      document.getElementById("ansInput").addEventListener("keyup", ({key}) => {
+      document.getElementById("ansInput").addEventListener("keyup", ({key}) => { /*讓輸入框按enter能啟動checkAns()*/
         if (key === "Enter") {
           checkAns();
         }
