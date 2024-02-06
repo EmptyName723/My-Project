@@ -13,32 +13,56 @@
 const IDList = ["0", "812572364", "1409221590", "32017675"];
 const name = [];
 
-function fetchData(id, index) {
-    const httpRequest = new XMLHttpRequest();
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=' + id + '&single=true&output=csv';
-    httpRequest.open('GET', url, true);
-    httpRequest.send();
+function fetchData(id) {
+    return new Promise((resolve, reject) => {
+        const httpRequest = new XMLHttpRequest();
+        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=' + id + '&single=true&output=csv';
+        httpRequest.open('GET', url, true);
+        httpRequest.send();
 
-    httpRequest.onreadystatechange = function () {
-        if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-            const name_csv = httpRequest.responseText;
-            const name_rows = name_csv.split('\r\n').map(row => row.split(','));
-            const name_list = [];
-            for (let i = 1; i < name_rows.length; i++) {
-                const rowObject = {};
-                for (let j = 0; j < name_rows[i].length; j++) {
-                    rowObject[name_rows[0][j]] = name_rows[i][j];
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4) {
+                if (httpRequest.status == 200) {
+                    const name_csv = httpRequest.responseText;
+                    if (name_csv.trim() !== '') {
+                        const lines = name_csv.split(/\r\n|\n|\r/);
+                        const headers = lines[0].split(',');
+                        const name_list = [];
+
+                        for (let i = 1; i < lines.length; i++) {
+                            const data = lines[i].split(',');
+                            const rowObject = {};
+
+                            for (let j = 0; j < headers.length; j++) {
+                                rowObject[headers[j]] = data[j];
+                            }
+
+                            name_list.push(rowObject);
+                        }
+
+                        resolve(name_list);
+                    } else {
+                        reject("CSV data is empty for ID: " + id);
+                    }
+                } else {
+                    reject("Failed to fetch data for ID: " + id);
                 }
-                name_list.push(rowObject);
             }
-            name.push(name_list);
-            console.log(name[index]); // Access data using index
-        }
-    };
+        };
+    });
 }
 
-// Call fetchData function for each ID in IDList
-IDList.forEach((id, index) => fetchData(id, index));
+// Fetch data for each ID in IDList using promises
+Promise.all(IDList.map(id => fetchData(id)))
+    .then(results => {
+        results.forEach((result, index) => {
+            name[index] = result;
+            console.log(name[index]);
+        });
+    })
+    .catch(error => {
+        console.error(error);
+    });
 </script>
 
 </body>
