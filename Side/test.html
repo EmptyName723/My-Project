@@ -10,10 +10,10 @@
 <div id="dataDisplay"></div>
 
 <script>
+var url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pubhtml';
+
 // Function to fetch Google Sheet data
 function fetchGoogleSheetData(sheetID, callback) {
-    var url = 'https://spreadsheets.google.com/feeds/list/' + sheetID + '/1/public/values?alt=json';
-
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
@@ -46,11 +46,8 @@ function displayData(dataArray) {
     document.getElementById('dataDisplay').innerHTML = html;
 }
 
-// Google Sheet ID (replace 'SHEET_ID' with your actual Google Sheet ID)
-var sheetID = '19yJ7FckECyCo3i1plBnW2JYe1cVSvhH7PiAEK5Erh5U';
-
 // Fetch Google Sheet data and display it
-fetchGoogleSheetData(sheetID, displayData);
+fetchGoogleSheetData(url, displayData);
 </script>
 
 </body>
