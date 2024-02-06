@@ -1,69 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Google Sheets Data</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      font-size: 125%;
+    }
+    h2 {
+      text-align: center;
+    }
+    #ansInput {
+      margin-right: 10px;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #428bca;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 7px;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: #3071a9;
+    }
+    .result {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 120%;
+      font-weight: bold;
+    }
+    #checkbox {
+      position: absolute;
+      bottom: 80px;
+    }
+    #percent_cont {
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+    }
+    #name {
+      font-size: 10px;
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
+  <div class="container" style="margin-top: 35vh;">
+    <h2 id="question"></h2>
+    <input type="text" id="ansInput">
+    <button id="submit" onclick="checkAns()" class="button">Submit</button>
+    <button id="next" onclick="nextQ()" class="button">Next</button>
+    <p id="result" class="result"></p>
+    <div id="checkbox">
+      <input type="checkbox" data-id="trematoda_" checked> 吸蟲 <br />
+      <input type="checkbox" data-id="protozoa_" checked> 原蟲 <br />
+      <input type="checkbox" data-id="amoeba_" checked> 阿米巴 <br />
+      <input type="checkbox" data-id="snail_" checked> 蝸牛 <br />
+    </div>
+    <div id="percent_cont">    
+      <label for="percentage" id="perc_label">英文學名出現比例：</label>
+      <input type="range" id="percentage" name="percentage" min="0" max="10">
+    </div>
+    <!-- <p id="debug"></p> -->
+    <p id="name">1101037</p>
+  </div>
 
-<div id="dataDisplay"></div>
-
-<script>
-const IDList = ["0", "812572364", "1409221590", "32017675"];
-const name = [];
-
-function fetchData(id) {
-    return new Promise((resolve, reject) => {
-        const httpRequest = new XMLHttpRequest();
-        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=' + id + '&single=true&output=csv';
-        httpRequest.open('GET', url, true);
-        httpRequest.send();
-
-        httpRequest.onreadystatechange = function () {
-            if (httpRequest.readyState == 4) {
-                if (httpRequest.status == 200) {
-                    const name_csv = httpRequest.responseText;
-                    if (name_csv.trim() !== '') {
-                        const lines = name_csv.split(/\r\n|\n|\r/);
-                        const headers = lines[0].split(',');
-                        const name_list = [];
-
-                        for (let i = 1; i < lines.length; i++) {
-                            const data = lines[i].split(',');
-                            const rowObject = {};
-
-                            for (let j = 0; j < headers.length; j++) {
-                                rowObject[headers[j]] = data[j];
-                            }
-
-                            name_list.push(rowObject);
-                        }
-
-                        resolve(name_list);
-                    } else {
-                        reject("CSV data is empty for ID: " + id);
-                    }
-                } else {
-                    reject("Failed to fetch data for ID: " + id);
-                }
-            }
-        };
-    });
-}
-
-// Fetch data for each ID in IDList using promises
-Promise.all(IDList.map(id => fetchData(id)))
-    .then(results => {
-        results.forEach((result, index) => {
-            name[index] = result;
-            console.log(name[index]);
-        });
-    })
-    .catch(error => {
-        console.error(error);
-    });
-</script>
-
+  <script type = "text/javascript" src="get_data.js"></script>
+  <script type = "text/javascript" src="final.js"></script>
 </body>
 </html>
