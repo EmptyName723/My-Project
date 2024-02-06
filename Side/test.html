@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Sheets Data</title>
+</head>
+<body>
+
+<div id="dataDisplay"></div>
+
+<script>
+const IDList = ["0", "812572364", "1409221590", "32017675"];
+const name = [];
+
+function fetchData(id) {
+    return new Promise((resolve, reject) => {
+        const httpRequest = new XMLHttpRequest();
+        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=' + id + '&single=true&output=csv';
+        httpRequest.open('GET', url, true);
+        httpRequest.send();
+
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4) {
+                if (httpRequest.status == 200) {
+                    const name_csv = httpRequest.responseText;
+                    if (name_csv.trim() !== '') {
+                        const lines = name_csv.split(/\r\n|\n|\r/);
+                        const headers = lines[0].split(',');
+                        const name_list = [];
+
+                        for (let i = 1; i < lines.length; i++) {
+                            const data = lines[i].split(',');
+                            const rowObject = {};
+
+                            for (let j = 0; j < headers.length; j++) {
+                                rowObject[headers[j]] = data[j];
+                            }
+
+                            name_list.push(rowObject);
+                        }
+
+                        resolve(name_list);
+                    } else {
+                        reject("CSV data is empty for ID: " + id);
+                    }
+                } else {
+                    reject("Failed to fetch data for ID: " + id);
+                }
+            }
+        };
+    });
+}
+
+// Fetch data for each ID in IDList using promises
+Promise.all(IDList.map(id => fetchData(id)))
+    .then(results => {
+        results.forEach((result, index) => {
+            name[index] = result;
+            console.log(name[index]);
+        });
+    })
+    .catch(error => {
+        console.error(error);
+    });
+</script>
+
+</body>
+</html>
