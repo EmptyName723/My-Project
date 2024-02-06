@@ -10,38 +10,36 @@
 <div id="dataDisplay"></div>
 
 <script>
-var IDList = ["0","812572364"];
+const IDList = ["0", "812572364"];
+const name = []; // Changed var to const
 
-var name = [];
-
-for (let i = 0; i < IDList.length; i++) {
+function fetchData(id) {
     const httpRequest = new XMLHttpRequest();
-    var urls = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=' + IDList[i] + '&single=true&output=csv'
-    httpRequest.open('GET',urls, true)
-    httpRequest.send()
+    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=' + id + '&single=true&output=csv';
+    httpRequest.open('GET', url, true);
+    httpRequest.send();
 
-    //切割成list of dict
     httpRequest.onreadystatechange = function () {
         if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-            var name_csv = httpRequest.responseText
-            name_csv = name_csv.split('\n')
-            for(var i = 0; i < name_csv.length; i++) {
-                name_csv[i] = name_csv[i].substring(0, name_csv[i].length-1)
-                name_csv[i] = name_csv[i].split(',')
-            }
-            name_list = []
-            for(var i = 1; i < name_csv.length; i++) {
-                name_list[i-1] = {}
-                for(var j=0;j<name_csv[i].length;j++){
-                    name_list[i-1][name_csv[0][j]] = name_csv[i][j]
+            const name_csv = httpRequest.responseText;
+            const name_rows = name_csv.split('\n').map(row => row.split(','));
+            const name_list = [];
+            for (let i = 1; i < name_rows.length; i++) {
+                const rowObject = {};
+                for (let j = 0; j < name_rows[i].length; j++) {
+                    rowObject[name_rows[0][j]] = name_rows[i][j];
                 }
+                name_list.push(rowObject);
             }
             console.log(name_list);
-            name[i].push(name_list);
-            console.log(name[i]);
+            name.push(name_list);
+            console.log(name);
         }
-    }
-};
+    };
+}
+
+// Call fetchData function for each ID in IDList
+IDList.forEach(fetchData);
 </script>
 
 </body>
