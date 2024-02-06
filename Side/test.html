@@ -10,8 +10,8 @@
 <div id="dataDisplay"></div>
 
 <script>
-const IDList = ["0", "812572364"];
-const name = []; // Changed var to const
+const IDList = ["0", "812572364", "1409221590", "32017675"];
+const name = [];
 
 function fetchData(id) {
     const httpRequest = new XMLHttpRequest();
@@ -22,7 +22,7 @@ function fetchData(id) {
     httpRequest.onreadystatechange = function () {
         if (httpRequest.readyState == 4 && httpRequest.status == 200) {
             const name_csv = httpRequest.responseText;
-            const name_rows = name_csv.split('\n').map(row => row.split(','));
+            const name_rows = name_csv.split('\r\n').map(row => row.split(','));
             const name_list = [];
             for (let i = 1; i < name_rows.length; i++) {
                 const rowObject = {};
@@ -31,7 +31,6 @@ function fetchData(id) {
                 }
                 name_list.push(rowObject);
             }
-            console.log(name_list);
             name.push(name_list);
             console.log(name[IDList.indexOf(id)]);
         }
