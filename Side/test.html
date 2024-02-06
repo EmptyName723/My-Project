@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Sheets Data</title>
+</head>
+<body>
+
+<div id="dataDisplay"></div>
+
+<script>
+// Function to fetch Google Sheet data
+function fetchGoogleSheetData(sheetID, callback) {
+    var url = 'https://spreadsheets.google.com/feeds/list/' + sheetID + '/1/public/values?alt=json';
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var data = JSON.parse(xhr.responseText);
+            var entries = data.feed.entry;
+            var dataArray = [];
+
+            entries.forEach(function(entry) {
+                var rowObject = {};
+                for (var key in entry) {
+                    if (key.startsWith('gsx$')) {
+                        var cellValue = entry[key].$t;
+                        var formattedKey = key.replace('gsx$', '');
+                        rowObject[formattedKey] = cellValue;
+                    }
+                }
+                dataArray.push(rowObject);
+            });
+
+            callback(dataArray);
+        }
+    };
+    xhr.open('GET', url, true);
+    xhr.send();
+}
+
+// Function to display data as a JavaScript array in an HTML object
+function displayData(dataArray) {
+    var html = '<pre>' + JSON.stringify(dataArray, null, 2) + '</pre>';
+    document.getElementById('dataDisplay').innerHTML = html;
+}
+
+// Google Sheet ID (replace 'SHEET_ID' with your actual Google Sheet ID)
+var sheetID = '19yJ7FckECyCo3i1plBnW2JYe1cVSvhH7PiAEK5Erh5U';
+
+// Fetch Google Sheet data and display it
+fetchGoogleSheetData(sheetID, displayData);
+</script>
+
+</body>
+</html>
