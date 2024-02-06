@@ -63,6 +63,15 @@ Promise.all(IDList.map(id => fetchData(id)))
     .catch(error => {
         console.error(error);
     });
+
+const trematoda_ = name[0];
+const protozoa_ = name[1];
+const amoeba_ = name[2];
+const snail_ = name[3];
+
+for (let i = 0; i < name.length; i++) {
+    document.getElementById("dataDisplay" + i).innerHTML = name[i];
+}
 </script>
 
 </body>
