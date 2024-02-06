@@ -10,44 +10,30 @@
 <div id="dataDisplay"></div>
 
 <script>
-var url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pubhtml';
+const httpRequest = new XMLHttpRequest();
+var urls = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSngZjEjTh4vrohCypUBwnP1xkPTocH3UBNxqqxbBDEDzGI7gZ8utpYlAcNUkxMQ2lLzBKx8OLfBKkk/pub?gid=0&single=true&output=csv'
+httpRequest.open('GET',urls, true)
+httpRequest.send()
 
-// Function to fetch Google Sheet data
-function fetchGoogleSheetData(sheetID, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var data = JSON.parse(xhr.responseText);
-            var entries = data.feed.entry;
-            var dataArray = [];
-
-            entries.forEach(function(entry) {
-                var rowObject = {};
-                for (var key in entry) {
-                    if (key.startsWith('gsx$')) {
-                        var cellValue = entry[key].$t;
-                        var formattedKey = key.replace('gsx$', '');
-                        rowObject[formattedKey] = cellValue;
-                    }
-                }
-                dataArray.push(rowObject);
-            });
-
-            callback(dataArray);
+//切割成list of dict
+httpRequest.onreadystatechange = function () {
+    if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+        var tags_csv = httpRequest.responseText
+        tags_csv = tags_csv.split('\n')
+        for(var i=0;i<tags_csv.length;i++){
+            tags_csv[i] = tags_csv[i].substring(0, tags_csv[i].length-1)
+            tags_csv[i] = tags_csv[i].split(',')
         }
-    };
-    xhr.open('GET', url, true);
-    xhr.send();
-}
-
-// Function to display data as a JavaScript array in an HTML object
-function displayData(dataArray) {
-    var html = '<pre>' + JSON.stringify(dataArray, null, 2) + '</pre>';
-    document.getElementById('dataDisplay').innerHTML = html;
-}
-
-// Fetch Google Sheet data and display it
-fetchGoogleSheetData(url, displayData);
+        tags_list = []
+        for(var i=1;i<tags_csv.length;i++){
+            tags_list[i-1] = {}
+            for(var j=0;j<tags_csv[i].length;j++){
+                tags_list[i-1][tags_csv[0][j]] = tags_csv[i][j]
+            }
+        }
+        console.log(tags_list);
+    }
+};
 </script>
 
 </body>
