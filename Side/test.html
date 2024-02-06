@@ -20,8 +20,8 @@ function fetchData(id) {
     httpRequest.send();
 
     httpRequest.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            const name_csv = this.responseText;
+        if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+            const name_csv = httpRequest.responseText;
             const name_rows = name_csv.split('\r\n').map(row => row.split(','));
             const name_list = [];
             for (let i = 1; i < name_rows.length; i++) {
