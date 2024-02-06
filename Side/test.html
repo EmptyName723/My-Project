@@ -19,7 +19,7 @@ httpRequest.send()
 httpRequest.onreadystatechange = function () {
     if (httpRequest.readyState == 4 && httpRequest.status == 200) {
         var tags_csv = httpRequest.responseText
-        tags_csv = tags_csv.split('\n')
+        tags_csv = tags_csv.split('\r\n')
         for(var i=0;i<tags_csv.length;i++){
             tags_csv[i] = tags_csv[i].substring(0, tags_csv[i].length-1)
             tags_csv[i] = tags_csv[i].split(',')
