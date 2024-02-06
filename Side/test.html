@@ -17,6 +17,7 @@ function fetchData(id) {
     const httpRequest = new XMLHttpRequest();
     const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=' + id + '&single=true&output=csv';
     httpRequest.open('GET', url, true);
+    httpRequest.send();
 
     httpRequest.onreadystatechange = function () {
         if (httpRequest.readyState == 4 && httpRequest.status == 200) {
@@ -32,9 +33,11 @@ function fetchData(id) {
             }
             name.push(name_list);
             console.log(name[IDList.indexOf(id)]);
+        } else {
+            httpRequest.open('GET', url, true);
+            httpRequest.send();
         }
     };
-    httpRequest.send();
 }
 
 // Call fetchData function for each ID in IDList
