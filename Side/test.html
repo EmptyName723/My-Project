@@ -10,30 +10,46 @@
 <div id="dataDisplay"></div>
 
 <script>
-const httpRequest = new XMLHttpRequest();
-var urls = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=0&single=true&output=csv'
-httpRequest.open('GET',urls, true)
-httpRequest.send()
+var IDList = ["0","812572364"];
 
-//切割成list of dict
-httpRequest.onreadystatechange = function () {
-    if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-        var tags_csv = httpRequest.responseText
-        tags_csv = tags_csv.split('\n')
-        for(var i=0;i<tags_csv.length;i++){
-            tags_csv[i] = tags_csv[i].substring(0, tags_csv[i].length-1)
-            tags_csv[i] = tags_csv[i].split(',')
-        }
-        tags_list = []
-        for(var i=1;i<tags_csv.length;i++){
-            tags_list[i-1] = {}
-            for(var j=0;j<tags_csv[i].length;j++){
-                tags_list[i-1][tags_csv[0][j]] = tags_csv[i][j]
+var name = [];
+
+var trematoda_ = name[0];
+var protozoa_ = name[1];
+
+for (let i = 0; i < IDList.length; i++) {
+    const httpRequest = new XMLHttpRequest();
+    var urls = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=' + IDList[i].gSheetID + '&single=true&output=csv'
+    httpRequest.open('GET',urls, true)
+    httpRequest.send()
+
+    //切割成list of dict
+    httpRequest.onreadystatechange = function () {
+        if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+            var name_csv = httpRequest.responseText
+            name_csv = name_csv.split('\n')
+            for(var i = 0; i < name_csv.length; i++) {
+                name_csv[i] = name_csv[i].substring(0, name_csv[i].length-1)
+                name_csv[i] = name_csv[i].split(',')
             }
+            name_list = []
+            for(var i = 1; i < name_csv.length; i++) {
+                name_list[i-1] = {}
+                for(var j=0;j<name_csv[i].length;j++){
+                    name_list[i-1][name_csv[0][j]] = name_csv[i][j]
+                }
+            }
+            name[i] = (name_list);
         }
-        console.log(tags_list);
     }
 };
+
+for (let i = 0; i < array.length; i++) {
+    console.log(name[i]);
+    
+}
+
+
 </script>
 
 </body>
