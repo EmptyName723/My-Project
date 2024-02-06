@@ -25,12 +25,12 @@ function nextQ() {
     let flip = Math.random() * 10;
     
     if (percentage < flip) {
-    SelectedQ = quiz[rand].question;
-    SelectedA = quiz[rand].answer;
+    SelectedQ = quiz[rand].zh;
+    SelectedA = quiz[rand].en;
     }
     else {
-    SelectedQ = quiz[rand].answer;
-    SelectedA = quiz[rand].question;
+    SelectedQ = quiz[rand].en;
+    SelectedA = quiz[rand].zh;
     };
     document.getElementById("question").innerHTML = `${SelectedQ}`;
     document.getElementById("result").innerHTML = ``;
