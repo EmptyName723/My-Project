@@ -20,8 +20,8 @@ function fetchData(id) {
     httpRequest.send();
 
     httpRequest.onreadystatechange = function () {
-        if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-            const name_csv = httpRequest.responseText;
+        if (this.readyState == 4 && this.status == 200) {
+            const name_csv = this.responseText;
             const name_rows = name_csv.split('\r\n').map(row => row.split(','));
             const name_list = [];
             for (let i = 1; i < name_rows.length; i++) {
@@ -33,9 +33,6 @@ function fetchData(id) {
             }
             name.push(name_list);
             console.log(name[IDList.indexOf(id)]);
-        } else {
-            httpRequest.open('GET', url, true);
-            httpRequest.send();
         }
     };
 }
