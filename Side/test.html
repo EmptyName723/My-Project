@@ -14,9 +14,6 @@ var IDList = ["0","812572364"];
 
 var name = [];
 
-var trematoda_ = name[0];
-var protozoa_ = name[1];
-
 for (let i = 0; i < IDList.length; i++) {
     const httpRequest = new XMLHttpRequest();
     var urls = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=' + IDList[i] + '&single=true&output=csv'
@@ -39,7 +36,7 @@ for (let i = 0; i < IDList.length; i++) {
                     name_list[i-1][name_csv[0][j]] = name_csv[i][j]
                 }
             }
-            name[i] = (name_list);
+            return name[i] = (name_list);
         }
     }
 };
