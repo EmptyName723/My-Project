@@ -33,6 +33,8 @@ function fetchData(id) {
             }
             name.push(name_list);
             console.log(name[IDList.indexOf(id)]);
+        } else {
+            httpRequest.send();
         }
     };
 }
