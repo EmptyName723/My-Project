@@ -60,8 +60,8 @@
   <div class="container" style="margin-top: 35vh;">
     <h2 id="question"></h2>
     <input type="text" id="ansInput">
-    <button id="submit" onclick="checkAns()" class="button">Submit</button>
-    <button id="next" onclick="nextQ()" class="button">Next</button>
+    <button id="submit" class="button">Submit</button>
+    <button id="next" class="button">Next</button>
     <p id="result" class="result"></p>
     <div id="checkbox">
       <input type="checkbox" data-id="trematoda_" checked> 吸蟲 <br />
@@ -73,147 +73,148 @@
       <label for="percentage" id="perc_label">英文學名出現比例：</label>
       <input type="range" id="percentage" name="percentage" min="0" max="10">
     </div>
-    <!-- <p id="debug"></p> -->
     <p id="name">1101037</p>
   </div>
 
   <script>
-    const IDList = ["0", "812572364", "1409221590", "32017675"];
-    const name = [];
+    document.addEventListener("DOMContentLoaded", function () {
+      const IDList = ["0", "812572364", "1409221590", "32017675"];
+      const nameData = [];
 
-    function fetchData(id) {
+      function fetchData(id) {
         return new Promise((resolve, reject) => {
-            const httpRequest = new XMLHttpRequest();
-            const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=' + id + '&single=true&output=csv';
-            httpRequest.open('GET', url, true);
-            httpRequest.send();
+          const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRZO5_Xb0jVltZCUnjJVOqE4d1q08pLnZugLRKJgChzBQqsCDbeIJKWRcm0Dy1bovTgOXHS7o8dnYlH/pub?gid=${id}&single=true&output=csv`;
+          fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Failed to fetch data for ID: ${id}`);
+              }
+              return response.text();
+            })
+            .then(name_csv => {
+              const lines = name_csv.trim().split(/\r\n|\n|\r/);
+              const headers = lines[0].split(',');
+              const name_list = [];
 
-            httpRequest.onreadystatechange = function () {
-                if (httpRequest.readyState == 4) {
-                    if (httpRequest.status == 200) {
-                        const name_csv = httpRequest.responseText;
-                        if (name_csv.trim() !== '') {
-                            const lines = name_csv.split(/\r\n|\n|\r/);
-                            const headers = lines[0].split(',');
-                            const name_list = [];
+              for (let i = 1; i < lines.length; i++) {
+                const data = lines[i].split(',');
+                const rowObject = {};
 
-                            for (let i = 1; i < lines.length; i++) {
-                                const data = lines[i].split(',');
-                                const rowObject = {};
-
-                                for (let j = 0; j < headers.length; j++) {
-                                    rowObject[headers[j]] = data[j];
-                                }
-
-                                name_list.push(rowObject);
-                            }
-
-                            resolve(name_list);
-                        } else {
-                            reject("CSV data is empty for ID: " + id);
-                        }
-                    } else {
-                        reject("Failed to fetch data for ID: " + id);
-                    }
+                for (let j = 0; j < headers.length; j++) {
+                  rowObject[headers[j]] = data[j];
                 }
-            };
-        });
-    }
 
-    // Fetch data for each ID in IDList using promises
-    Promise.all(IDList.map(id => fetchData(id)))
-        .then(results => {
-            results.forEach((result, index) => {
-                name[index] = result;
-                console.log(name[index]);
+                name_list.push(rowObject);
+              }
+
+              resolve(name_list);
+            })
+            .catch(error => {
+              reject(error);
             });
+        });
+      }
+
+      Promise.all(IDList.map(id => fetchData(id)))
+        .then(results => {
+          results.forEach(result => {
+            nameData.push(result);
+          });
+          updateQuiz();
         })
         .catch(error => {
-            console.error(error);
+          console.error(error);
         });
-    
-    let trematoda_ = name[1];
-    let protozoa_ = name[2];
-    let amoeba_ = name[3];
-    let snail_ = name[4];
 
-    let quiz = [];    
+      let trematodaData = [];
+      let protozoaData = [];
+      let amoebaData = [];
+      let snailData = [];
 
-let SelectedQ;
-let SelectedA;
-let randomN = 0;
-let rand = -1;
-let lastQ = -1;
-let norepeat = [];
-const checkBoxes = document.querySelectorAll("input[type=checkbox]");
+      let quiz = [];
+      let selectedQuestion;
+      let selectedAnswer;
+      let randomIndex = 0;
+      let lastQuestionIndex = -1;
+      let noRepeatIndexes = [];
 
-function nextQ() {
-    do {
-    randomN = Math.floor(Math.random() * quiz.length);
-    } while (norepeat.includes(randomN) === true || randomN === lastQ);
-    rand = randomN;
-    lastQ = rand;
+      const checkBoxes = document.querySelectorAll("input[type=checkbox]");
+      const submitButton = document.getElementById("submit");
+      const nextButton = document.getElementById("next");
+      const questionElement = document.getElementById("question");
+      const resultElement = document.getElementById("result");
+      const answerInput = document.getElementById("ansInput");
 
-    norepeat.push(rand);
+      function updateQuiz() {
+        trematodaData = nameData[1];
+        protozoaData = nameData[2];
+        amoebaData = nameData[3];
+        snailData = nameData[4];
 
-    if (norepeat.length >= Math.floor(quiz.length * 0.75)) {
-    norepeat.shift();
-    }
+        quiz = Array.from(checkBoxes)
+          .filter(elm => elm.checked)
+          .flatMap(elm => {
+            const dataId = elm.getAttribute('data-id');
+            if (dataId === 'trematoda_') return trematodaData;
+            if (dataId === 'protozoa_') return protozoaData;
+            if (dataId === 'amoeba_') return amoebaData;
+            if (dataId === 'snail_') return snailData;
+            return [];
+          });
 
-    let percentage = document.getElementById("percentage").value;
-    let flip = Math.random() * 10;
-    
-    if (percentage < flip) {
-    SelectedQ = quiz[rand].zh;
-    SelectedA = quiz[rand].en;
-    }
-    else {
-    SelectedQ = quiz[rand].en;
-    SelectedA = quiz[rand].zh;
-    };
-    document.getElementById("question").innerHTML = `${SelectedQ}`;
-    document.getElementById("result").innerHTML = ``;
-    document.getElementById("ansInput").value = "";
-    //document.getElementById("debug").innerHTML = `rand=${rand}, norepeat=${norepeat.toString()}, lastQ=${lastQ}`;
-}
+        noRepeatIndexes = [];
+        nextQuestion();
+      }
 
-function checkAns() {
-    let input = document.getElementById("ansInput").value;
-    
-    if (input === SelectedA || input === SelectedA + ' ' || input === SelectedA + '.') {
-    document.getElementById("result").innerHTML = `Correct`;
-    }
-    else {
-    document.getElementById("result").innerHTML = `Incorrect! <i>${SelectedA}</i>`;
-    norepeat.pop();
-    }
-}
+      function nextQuestion() {
+        do {
+          randomIndex = Math.floor(Math.random() * quiz.length);
+        } while (noRepeatIndexes.includes(randomIndex) || randomIndex === lastQuestionIndex);
 
-function updateQuiz() {
-    quiz = Array.from(checkBoxes)
-    .filter(elm => elm.checked)
-    .flatMap(elm => {
-        const dataId = elm.getAttribute('data-id');
-        if (dataId === 'trematoda_') return trematoda_;
-        if (dataId === 'protozoa_') return protozoa_;
-        if (dataId === 'amoeba_') return amoeba_;
-        if (dataId === 'snail_') return snail_;
-        return [];
+        lastQuestionIndex = randomIndex;
+        noRepeatIndexes.push(randomIndex);
+
+        if (noRepeatIndexes.length >= Math.floor(quiz.length * 0.75)) {
+          noRepeatIndexes.shift();
+        }
+
+        const percentage = document.getElementById("percentage").value;
+        const flip = Math.random() * 10;
+
+        if (percentage < flip) {
+          selectedQuestion = quiz[randomIndex].zh;
+          selectedAnswer = quiz[randomIndex].en;
+        } else {
+          selectedQuestion = quiz[randomIndex].en;
+          selectedAnswer = quiz[randomIndex].zh;
+        }
+        questionElement.textContent = selectedQuestion;
+        resultElement.textContent = "";
+        answerInput.value = "";
+      }
+
+      function checkAnswer() {
+        const input = answerInput.value.trim();
+
+        if (input === selectedAnswer || input === selectedAnswer + ' ' || input === selectedAnswer + '.') {
+          resultElement.innerHTML = `Correct`;
+        } else {
+          resultElement.innerHTML = `Incorrect! <i>${selectedAnswer}</i>`;
+          noRepeatIndexes.pop();
+        }
+      }
+
+      function handleKeyPress(event) {
+        if (event.key === "Enter") {
+          checkAnswer();
+        }
+      }
+
+      checkBoxes.forEach(elm => elm.addEventListener("change", updateQuiz));
+      submitButton.addEventListener("click", checkAnswer);
+      nextButton.addEventListener("click", nextQuestion);
+      answerInput.addEventListener("keyup", handleKeyPress);
     });
-    norepeat = [];
-    nextQ();
-}
-
-window.onload = function() {
-    checkBoxes.forEach(elm => elm.addEventListener("change", updateQuiz));
-    updateQuiz();
-    
-    document.getElementById("ansInput").addEventListener("keyup", ({key}) => {
-    if (key === "Enter") {
-        checkAns();
-    }
-    });
-}
   </script>
 </body>
 </html>
