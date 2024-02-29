@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: block;
+      justify-content: center;
+      font-size: 125%;
+    }
+    h2 {
+      text-align: center;
+    }
+    .container {
+      margin-top: 35vh;
+    }
+    #inputDiv {
+      margin: auto;
+      width: 40%;
+    }
+    @media only screen and (max-width: 1000px) {
+      #inputDiv {
+        width: 80%;
+      }
+    }
+    #ansInput {
+      margin-right: 10px;
+      width: max(calc(100% - 200px),200px);
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #428bca;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 7px;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: #3071a9;
+    }
+    .result {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 120%;
+      font-weight: bold;
+    }
+    #checkbox {
+      position: absolute;
+      bottom: 80px;
+      left: calc(50vw - 160px);
+    }
+    #percent_cont {
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+    }
+    #name {
+      font-size: 10px;
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+    }
+    .Qimg {
+      text-align: center;
+    }
+    .Qimg img {
+      max-width: 100%;
+      max-height: 40vh;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="question" class="Qimg"></div>
+    <div id="inputDiv">
+      <input type="text" id="ansInput">
+      <button id="submit" class="button">Submit</button>
+      <button id="next" class="button">Next</button>
+      <p id="result" class="result"></p>
+    </div>
+    <div id="checkbox">
+      <input type="checkbox" data-id="epithelium_" checked> 上皮 <br />
+      <input type="checkbox" data-id="connective_" checked> 結締 <br />
+      <!-- <input type="checkbox" data-id="bone_" checked> 骨頭 <br />
+      <input type="checkbox" data-id="muscle_" checked> 肌肉 <br />
+      <input type="checkbox" data-id="nerve_" checked> 神經 <br /> -->
+    </div>
+    <p id="name">1101037</p>
+  </div>
+
+  <script type="text/javascript" src="midterm-experiment.js"></script>
+</body>
+</html>
