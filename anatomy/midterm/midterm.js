@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Display the image
-    anatomyImg.innerHTML = `<img src="${anatomyImgURL}" alt="No Anatomy Image :(" style="width: 400px;">`;
+    anatomyImg.innerHTML = `<img src="${anatomyImgURL}" alt="No Anatomy Image :(" style="width: min(400px,80vw);">`;
     anatomyImg.style.display = "block";
   }
 
