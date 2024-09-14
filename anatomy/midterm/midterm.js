@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const IDList = ["0","921153934"];
+  const IDList = ["0","1799364348","921153934"];
   const nameData = [];
 
   function fetchData(id) {
@@ -47,7 +47,8 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error(error);
     });
 
-  let headData = [];
+  let headBonesData = [];
+  let headMusclesData = [];
   let neckData = [];
 
   let quiz = [];
@@ -67,14 +68,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const anatomyImg = document.getElementById("anatomyImg");
 
   function updateQuiz() {
-    headData = nameData[0];
-    neckData = nameData[1];
+    headBonesData = nameData[0];
+    headMusclesData = nameData[1];
+    neckData = nameData[2];
 
     quiz = Array.from(checkBoxes)
       .filter(elm => elm.checked)
       .flatMap(elm => {
         const dataId = elm.getAttribute('data-id');
-        if (dataId === 'head_') return headData;
+        if (dataId === 'headBones_') return headBonesData;
+        if (dataId === 'headMuscles_') return headMusclesData;
         if (dataId === 'neck_') return neckData;
         return [];
       });
