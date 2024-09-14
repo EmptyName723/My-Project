@@ -61,6 +61,15 @@
       position: absolute;
       bottom: 80px;
       left: calc(50vw - 160px);
+      justify-content: center;
+      align-items: center;
+    }
+    #checkboxBox {
+      display: flex;
+      width: 150%;
+    }
+    .checkboxRow {
+      flex: 1;
     }
     #percent_cont {
       position: absolute;
@@ -92,8 +101,21 @@
       </div>
     </div>
       <div id="checkbox">
-      <input type="checkbox" data-id="head_" checked> 頭部 <br />
-      <input type="checkbox" data-id="neck_" checked> 頸部 <br />
+        <div id="checkboxBox">
+          <div class="checkboxRow">
+            <p><b>頭部</b></p>
+            <input type="checkbox" data-id="headBones_" checked> 骨頭 <br />
+            <input type="checkbox" data-id="headMuscles_" checked> 肌肉 <br />
+          </div>
+          <div class="checkboxRow">
+            <p><b>頸部</b></p>
+            <input type="checkbox" data-id="neck_" checked> 頸部 <br />
+          </div>
+          <div class="checkboxRow">
+            <p><b>備用</b></p>
+            <input type="checkbox" data-id="placeholder_" checked> 佔位 <br />
+          </div>
+        </div>
     </div>
     <div id="percent_cont">    
       <label for="percentage" id="perc_label">英文學名出現比例：</label>
