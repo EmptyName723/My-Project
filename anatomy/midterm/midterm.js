@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const IDList = ["0","1799364348","921153934"];
+  const IDList = ["0","1799364348","668595014","777719902","921153934","2136148559","2050230318","1399142581"];
   const nameData = [];
 
   function fetchData(id) {
@@ -49,7 +49,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let headBonesData = [];
   let headMusclesData = [];
-  let neckData = [];
+  let headVesselsData = [];
+  let headNervesData = [];
+  let neckBonesData = [];
+  let neckMusclesData = [];
+  let neckVesselsData = [];
+  let neckNervesData = [];
 
   let quiz = [];
   let selectedQuestion;
@@ -70,7 +75,12 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateQuiz() {
     headBonesData = nameData[0];
     headMusclesData = nameData[1];
-    neckData = nameData[2];
+    headVesselsData = nameData[2];
+    headNervesData = nameData[3];
+    neckBonesData = nameData[4];
+    neckMusclesData = nameData[5];
+    neckVesselsData = nameData[6];
+    neckNervesData = nameData[7];
 
     quiz = Array.from(checkBoxes)
       .filter(elm => elm.checked)
@@ -78,7 +88,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const dataId = elm.getAttribute('data-id');
         if (dataId === 'headBones_') return headBonesData;
         if (dataId === 'headMuscles_') return headMusclesData;
-        if (dataId === 'neck_') return neckData;
+        if (dataId === 'headVessels_') return headVesselsData;
+        if (dataId === 'headNerves_') return headNervesData;
+        if (dataId === 'neckBones_') return neckBonesData;
+        if (dataId === 'neckMuscles_') return neckMusclesData;
+        if (dataId === 'neckVessels_') return neckVesselsData;
+        if (dataId === 'neckNerves_') return neckNervesData;
         return [];
       });
 
