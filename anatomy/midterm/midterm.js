@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const lines = name_csv.trim().split(/\r\n|\n|\r/);
           const headers = lines[0].split(',');
           const name_list = [];
-
+          
           for (let i = 1; i < lines.length; i++) {
             const data = lines[i].split(',');
             const rowObject = {};
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             name_list.push(rowObject);
           }
-
+          console.log(name_list);
           resolve(name_list);
         })
         .catch(error => {
