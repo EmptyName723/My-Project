@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (dataId === 'neckNerves_') return neckNervesData;
         return [];
       });
-    console.log(quiz);
     noRepeatIndexes = [];
     nextQuestion();
   }
