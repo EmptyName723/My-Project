@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             name_list.push(rowObject);
           }
-          console.log(name_list);
           resolve(name_list);
         })
         .catch(error => {
@@ -96,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (dataId === 'neckNerves_') return neckNervesData;
         return [];
       });
-
+    console.log(quiz);
     noRepeatIndexes = [];
     nextQuestion();
   }
