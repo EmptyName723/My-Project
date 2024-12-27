@@ -1,139 +1,162 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      display: block;
-      justify-content: center;
-      font-size: 125%;
-    }
-    h2 {
-      text-align: center;
-    }
-    #inputDiv {
-      margin: auto;
-      width: 40%;
-    }
-    @media only screen and (max-width: 1000px) {
-      #inputDiv {
-        width: 80%;
-      }
-    }
-    #ansInput {
-      margin-right: 10px;
-      width: max(calc(100% - 200px));
-    }
-    .button {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #428bca;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 7px;
-      transition: background-color 0.3s;
-    }
-    .button:hover {
-      background-color: #3071a9;
-    }
-    .result {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 120%;
-      font-weight: bold;
-    }
-    #anatomyImg {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-    }
-    #anatomyImg img {
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: 20px;
-      max-width: 30vh;
-      max-height: 30vh;
-    }
-    @media only screen and (max-height: 1000px) {
-      #anatomyImg img {
-        max-width: 300px;
-        max-height: 300px;
-      }
-    }
-    #checkbox {
-      position: absolute;
-      display: none;
-      bottom: 80px;
-      left: calc(50vw - 160px);
-      justify-content: center;
-      align-items: center;
-    }
-    #checkboxBox {
-      display: flex;
-      width: 150%;
-    }
-    .checkboxRow {
-      flex: 1;
-    }
-    #percent_cont {
-      position: absolute;
-      bottom: 40px;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      display: none;
-    }
-    #toggleQuestionType {
-      position: absolute;
-      display: none;
-      bottom: 20px;
-      left: calc(50% - 75px);
-      width: 150px;
-      text-align: center;
-    }
-    #name {
-      display: none;
-      font-size: 10px;
-      position: absolute;
-      bottom: 10px;
-      left: 0;
-      width: 100%;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <div class="container" style="margin-top: 10vh;">
-    <h2 id="question"></h2>
-    <div id="anatomyImg"></div>
-    <div id="inputDiv">
-      <input type="text" id="ansInput">
-      <button id="submit" class="button">Submit</button>
-      <button id="next" class="button">Next</button>
-      <p id="result" class="result"></p>
-    </div>
-    <div id="checkbox">
-      <div id="checkboxBox">
-        <div class="checkboxRow">
-          <p><b>病理</b></p>
-          <input type="checkbox" data-id="pathologySlides_" checked> 病理 <br />
-        </div>
-      </div>
-    </div>
-    <div id="percent_cont">
-      <label for="percentage" id="perc_label">英文學名出現比例：</label>
-      <input type="range" id="percentage" name="percentage" min="0" max="10" value="0">
-    </div>
-    <button id="toggleQuestionType" class="button">切換問題型式</button>
-    <p id="name">1101037</p>
-  </div>
+document.addEventListener("DOMContentLoaded", function () {
+  const IDList = ["0"];
+  const nameData = [];
 
-  <script type="text/javascript" src="midterm2.js"></script>
-</body>
-</html>
+  let showAsImage = true; // Toggle between text and image display
+
+  function fetchData(id) {
+    return new Promise((resolve, reject) => {
+      const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vSH0OdJ6XqbkA6LvUriJ5VsY3HTGfH3Ym2WZnPqE2TtHuxh5Gjzh5W4_7kyuBw1CFNgqLFIjlsnW5VZ/pub?gid=${id}&single=true&output=csv`;
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Failed to fetch data for ID: ${id}`);
+          }
+          return response.text();
+        })
+        .then(name_csv => {
+          const lines = name_csv.trim().split(/\r\n|\n|\r/);
+          const headers = lines[0].split(',');
+          const name_list = [];
+
+          for (let i = 1; i < lines.length; i++) {
+            const data = lines[i].split(',');
+            const rowObject = {};
+
+            for (let j = 0; j < headers.length; j++) {
+              rowObject[headers[j]] = data[j];
+            }
+
+            name_list.push(rowObject);
+          }
+
+          resolve(name_list);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+
+  Promise.all(IDList.map(id => fetchData(id)))
+    .then(results => {
+      results.forEach(result => {
+        nameData.push(result);
+      });
+      updateQuiz();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+
+  let pathologySlides = [];
+
+  let quiz = [];
+  let selectedQuestion;
+  let selectedAnswer;
+  let randomIndex = 0;
+  let noRepeatIndex = [];
+  let lastQuestionIndex = -1;
+
+  const checkBoxes = document.querySelectorAll("input[type=checkbox]");
+  const submitButton = document.getElementById("submit");
+  const nextButton = document.getElementById("next");
+  const questionElement = document.getElementById("question");
+  const resultElement = document.getElementById("result");
+  const answerInput = document.getElementById("ansInput");
+  const anatomyImg = document.getElementById("anatomyImg");
+  const toggleButton = document.getElementById("toggleQuestionType");
+
+  function updateQuiz() {
+    pathologySlides = nameData[0];
+
+    quiz = Array.from(checkBoxes)
+      .filter(elm => elm.checked)
+      .flatMap(elm => {
+        const dataId = elm.getAttribute('data-id');
+        if (dataId === 'pathologySlides_') return pathologySlides;
+        return [];
+      });
+    
+    noRepeatIndex = [];
+    
+    if (quiz.length === 0) {
+      console.error("Quiz data is empty. Check if data is correctly loaded.");
+      return;
+    }
+
+    updateUI();
+  }
+
+  function updateUI() {
+    do {
+      randomIndex = Math.floor(Math.random() * quiz.length);
+    } while (noRepeatIndex.includes(randomIndex) || randomIndex === lastQuestionIndex);
+
+    selectedQuestion = quiz[randomIndex];
+    lastQuestionIndex = randomIndex;
+    noRepeatIndex.push(randomIndex);
+
+    if (noRepeatIndex.length >= Math.floor(quiz.length * 0.75)) {
+      noRepeatIndex.shift();
+    }
+
+    if (!selectedQuestion) {
+      console.error("Selected question is undefined.");
+      return;
+    }
+
+    selectedAnswer = selectedQuestion.en || ""; // Get answer in English or set to empty string
+
+    if (showAsImage) {
+      questionElement.innerHTML = '';
+      
+      if (!selectedQuestion.image) {
+        console.warn("No image available for the selected question.");
+        updateUI();
+        return;
+      }
+
+      const imageURLs = selectedQuestion.image.split(";").map(url => url.trim());
+      const randomImageURL = `https://ee2.csmu.edu.tw/sysdata/doc/1/1c03048d5d0328ba/images/${imageURLs[Math.floor(Math.random() * imageURLs.length)]}.jpg`;
+
+      const img = document.createElement("img");
+      img.src = randomImageURL;
+      img.alt = "No pathology Image :(";
+      anatomyImg.innerHTML = '';
+      anatomyImg.appendChild(img);
+    } else {
+      questionElement.innerHTML = selectedQuestion.zh || "No question available.";
+      anatomyImg.innerHTML = '';
+    }
+
+    answerInput.value = '';
+    resultElement.innerHTML = '';
+  }
+
+  function checkAnswer() {
+    const inputAnswer = answerInput.value.trim();
+    if (inputAnswer === selectedAnswer) {
+      resultElement.innerHTML = 'Correct!';
+    } else {
+      resultElement.innerHTML = `Incorrect! The correct answer was: ${selectedAnswer}`;
+      noRepeatIndex.pop();
+    }
+  }
+
+  submitButton.addEventListener("click", checkAnswer);
+  answerInput.addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+      checkAnswer();
+    }
+  });
+
+  nextButton.addEventListener("click", updateQuiz);
+
+  toggleButton.addEventListener("click", () => {
+    showAsImage = !showAsImage;
+    updateUI();
+  });
+
+  updateQuiz();
+});
