@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (inputAnswer === selectedAnswer) {
       resultElement.innerHTML = 'Correct!';
     } else {
-      resultElement.innerHTML = `Incorrect! The correct answer was: ${selectedAnswer}`;
+      resultElement.innerHTML = "Incorrect! The correct answer was:" + "<br>" + `${selectedAnswer}`;
       noRepeatIndex.pop();
     }
   }
