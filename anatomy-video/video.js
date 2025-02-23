@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
             outputHTML += `
                 ${classDate ? `<li><strong>授課日期：</strong> ${classDate}<br>` : ""}
                 <ul>
-                  <li><strong>考點、重點：</strong>${keyPoints} &nbsp&nbsp <u>${streamLink}</u></li>
+                  <li>${keyPoints} &nbsp&nbsp <u>${streamLink}</u></li>
                 </ul>
               </li>
             `;
