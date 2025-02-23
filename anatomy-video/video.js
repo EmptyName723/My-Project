@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
-      testElement.innerHTML = outputHTML || "Teacher not found.";
+      testElement.innerHTML = outputHTML || "選太快了！再選一次看看";
     };
   } else {
     console.error("Select or test element not found in DOM.");
