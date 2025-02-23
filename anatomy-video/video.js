@@ -126,19 +126,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
           matchingRows.forEach(row => {
             const classDate = row["課堂日期、第幾節"]?.trim() || "";
-            const keyPoints = row["考點、重點（沒有請填沒有）"]?.trim() || "沒有";
+            const keyPoints = row["考點、重點（沒有請填沒有）"]?.trim() || "未填考點";
             let streamLink = row["串流連結"] || "";
 
             // Convert multiple URLs into clickable links
             streamLink = streamLink.replace(/https:\/\/[^\s,]+/g, (match) => {
-              return ` <a href="${match}" target="_blank">連結</a>`;
+              return ` <a href="${match}" target="_blank">串流連結</a>`;
             });
 
             outputHTML += `
                 ${classDate ? `<li><strong>授課日期：</strong> ${classDate}<br>` : ""}
                 <ul>
-                  <li><strong>考點、重點：</strong> ${keyPoints}</li>
-                  <li><strong>串流連結：</strong>${streamLink}</li>
+                  <li><strong>考點、重點：</strong>${keyPoints} &nbsp&nbsp <u>${streamLink}</u></li>
                 </ul>
               </li>
             `;
