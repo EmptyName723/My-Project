@@ -4,7 +4,16 @@ document.addEventListener("DOMContentLoaded", function () {
     "甲二": "1494659658",
     "甲三": "237099196",
     "甲四": "463563180",
-    "甲五": "1372435512"
+    "甲五": "1372435512",
+    "甲六": "986035467",
+    "甲七": "65697428",
+    "乙一": "87958853",
+    "乙二": "482936662",
+    "乙三": "974873327",
+    "乙四": "1374061122",
+    "乙五": "187902868",
+    "乙六": "286015303",
+    "乙七": "321724438",
   };
 
   let nameData = {}; // Store data by sheet name
@@ -44,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function fetchData(sheetName, gid) {
     return new Promise((resolve, reject) => {
-      const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vSUCU5wE1QwKAufiJMk1O5f5PnghLK7zqJMk8KB2qpYeay1bSN8U08JsM9p78_rD26BJ-YfDaE8oDgf/pub?gid=${gid}&single=true&output=csv`;
+      const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRZZvl0sPVZwAKhE0U2kUtEuxNKQPMBSRmVQlhLcIBYFzV8uWYST04tj4cj3ze-1YqZQotYIvF0lvlT/pub?gid=${gid}&single=true&output=csv`;
 
       console.log(`Fetching data from: ${url}`);
 
@@ -149,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
-      testElement.innerHTML = outputHTML || "選太快了！再選一次看看";
+      testElement.innerHTML = outputHTML || "選太快了！再選一次看看（或還沒上課）";
     };
   } else {
     console.error("Select or test element not found in DOM.");
