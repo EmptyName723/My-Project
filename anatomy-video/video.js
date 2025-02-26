@@ -164,3 +164,14 @@ document.addEventListener("DOMContentLoaded", function () {
     console.error("Select or test element not found in DOM.");
   }
 });
+
+var darkMode = 0;
+
+function toggleDark() {
+  var element = document.body;
+  element.classList.toggle("dark-mode");
+
+  darkMode = !darkMode;
+
+  document.getElementById("darkButton").innerHTML = `${darkMode ? `亮色模式` : "暗色模式"}`;
+}
