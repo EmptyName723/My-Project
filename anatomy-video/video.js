@@ -169,6 +169,7 @@ var darkMode = 0;
 
 function toggleDark() {
   var element = document.body;
+  
   element.classList.toggle("dark-mode");
 
   darkMode = !darkMode;
