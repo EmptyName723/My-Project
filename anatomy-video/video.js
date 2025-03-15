@@ -167,6 +167,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 var darkMode = 0;
 
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  toggleDark();
+}
+
 function toggleDark() {
   var element = document.body;
   
