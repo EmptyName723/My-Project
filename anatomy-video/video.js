@@ -163,13 +163,14 @@ document.addEventListener("DOMContentLoaded", function () {
   } else {
     console.error("Select or test element not found in DOM.");
   }
+
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {  
+    console.log(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    toggleDark();
+  }
 });
 
 var darkMode = 0;
-
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  toggleDark();
-}
 
 function toggleDark() {
   var element = document.body;
